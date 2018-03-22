@@ -1,0 +1,55 @@
+Il codice dipende dalla libreria Cbc
+
+Installazione in ambiente Unix https://projects.coin-or.org/Cbc
+(aggiungere il percorso delle librerie compilate al file /etc/ld.so.conf)
+
+Installazione in ambiente Microsoft https://projects.coin-or.org/Cbc/wiki/VSSetup
+La soluzione VisualStudio allegata è configurata in modalità release, occorre solo
+cambiare i percorsi di include e indicare al linker il percorso delle librerie
+compilate
+
+In ambiente Unix:
+ nel makefile sostituire <path> con la cartella che ospita l'installazione di Cbc
+ make (oppure make vrp) compila il solutore
+ make vrpgen compila il generatore
+
+La struttura delle istanze compatibili con il solver è la seguente
+ <Numero di veicoli>
+ <Capacità (peso)> <Capacità (volume)>
+ <numero di nodi>
+ Per ogni nodo: <id> <coordinata1> <coordinata2>
+ Per ogni nodo: <id> <domanda (peso)> <domanda (volume)>
+
+La struttura delle istanze compatibili con il generatore è
+ <Numero di veicoli>
+ <Capacità (peso)>
+ <numero di nodi>
+ Per ogni nodo: <id> <coordinata1> <coordinata2>
+ Per ogni nodo: <id> <domanda (peso)>
+
+Usage: vrp.exe filename algorithm
+Algorithms
+  :: Tabu Search meta-heuristic
+  -h [tMax(int) seed(int)]
+     tMax: maximum non-improving iterations (default 50)
+     seed: (default 12345)
+
+  :: Cutting planes (root only)
+  -p [doLog(0,1) strongBound(0,1)]
+     doLog: log to file the procedure's outcome (false/true default 1)
+     strongBound: perform branch and bound on the extended model (false/true default 1)
+
+  :: Branch and cut (own)
+  -b [timeOut(seconds) gapTolerance(float) branchTarget(float) ]
+     timeout: defines maximum running time (default unlimited)
+     fractionGapTolerance: interrupt search when relative gap is <= this value (default 0)
+     branchTarget: branching is performed on variable closest to this fraction (default 0.5=.5)
+
+  :: Branch and cut (CbcModel)
+  -c [logLevel(int) doCutOff(0,1) whichCuts(int) timeout(seconds) fractionGapTolerance(double)] 
+     logLevel: solver's verbosity [ 0 - silent, 1 - reduced, >1 verbose ] (default 1)
+     doCutOff: impose a heuristic cut off value on the objective function (default 0)
+     whichCuts: choose solver's separators [ 0 - vrp heuristics, >0 try Gomory's cuts if heuristics fail, 2 also use CglProbing ] (default 0)
+     timeout: set maximum running time (default unlimited)
+     fractionGapTolerance: interrupt search when relative gap is <= this value (default 0)
+
